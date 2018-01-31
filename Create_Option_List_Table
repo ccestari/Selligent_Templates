@@ -1,0 +1,15 @@
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'OPTION_TABLE_TEMPLATE')
+		BEGIN
+			CREATE TABLE [dbo].[OPTION_TABLE_TEMPLATE](
+				[ID] [int] IDENTITY(1,1) NOT NULL,
+				[EN] [nvarchar](50) NULL,
+				[CREATED_DT] [datetime] NULL,
+			PRIMARY KEY CLUSTERED 
+			(
+				[ID] ASC
+			)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+			) ON [PRIMARY]
+		END
+    
+-- Change the name of the table OPTION_TABLE_NAME on lines 1 and 3.  You can keep or remove the square brackets on line 3, but make sure they match at he beginning and end of the table name
+-- The field [EN] on line 5 is the only value you will need to change - Adjust the number in parenthesis to match the longest character count for this string    
