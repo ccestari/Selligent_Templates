@@ -1,0 +1,19 @@
+BEGIN
+			INSERT INTO OPTION_TABLE_TEMPLATE
+					(
+						EN
+						, CREATED_DT
+					) 
+				SELECT DISTINCT
+
+					SYNC.COLUMN1
+					, GETDATE()
+				FROM
+					SYNC_TABLE_NAME AS SYNC WITH(NOLOCK)
+					WHERE NOT EXISTS (SELECT 1 FROM OPTION_TEST_GROUP AS OPT_LIST WHERE OPT_LIST.EN = SYNC.COLUMN1  )  
+					AND SYNC.COLUMN1 IS NOT NULL ;
+		END
+    
+-- Change 'OPTION_TABLE_TEMPLATE' on line 2 to the name of the option list template you set up   
+-- The field 'COLUMN1' should be updated to the column name in the sync table that will be providing the option list values
+-- Update COLUMN1 on the lines 9, 13 and 14 below
