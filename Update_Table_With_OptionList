@@ -1,0 +1,47 @@
+BEGIN
+		UPDATE DST
+			SET
+				DST.COLUMN1			    =	SYNC.COLUMN1
+				, DST.COLUMN2		    =	SYNC.COLUMN2
+				, DST.OPTION_LIST1	=	OPTION_LIST1_ALIAS.ID
+				, DST.OPTION_LIST2	=	OPTION_LIST2_ALIAS.ID
+		FROM
+			DATA_TABLE_NAME AS DST WITH(NOLOCK)
+			INNER JOIN 
+			SYNC_TABLE_NAME AS SYNC WITH(NOLOCK)
+			ON DST.CLIENT_USER_ID = SYNC.USER_ID
+			LEFT JOIN OPTION_TABLE_TEMPLATE AS OPTION_LIST1_ALIAS WITH(NOLOCK) 
+			ON SYNC.SOME_OPTION_DATA1 = OPTION_LIST1_ALIAS.EN 
+			LEFT JOIN OPTION_TABLE_TEMPLATE AS OPTION_LIST2_ALIAS WITH(NOLOCK)
+			ON SYNC.SOME_OPTION_DATA2 = OPTION_LIST2_ALIAS.EN
+		END
+    
+-- This UPDATE query is for tables where at least one Option List is used
+-- Values for where Option Lists are used will need to be populated with the numerical value of the Option List Table column 'ID'.  
+-- You will see that Option List Tables are joined to the SYNC table by the 'EN' column value
+
+-- Instructions
+-- 1. On line 9 update the name of 'DATA_TABLE_NAME' to that of the target table name
+-- 2. On lime 11 update the name of 'SYNC_TABLE_NAME' to that of the sync table.  This should exactly match the 'Table name' field on the 'Destination' tab of your data loader task
+-- 3. Update the Key that is shared between each table.  Selligent will often use USERID on a data or action list.  If a MAID column is used, it may help to populate that first with a Selligent USERID
+-- 4. On line 13 update the name of 'OPTION_TABLE_TEMPLATE' to that of the Option list table you have already created.  If you have not yet created an option list able please refer to: https://github.com/ccestari/Selligent_Templates/blob/master/Create_Option_List_Table
+-- 5. Also on Line 13, you can change the table alias (it is currently 'OPTION_LIST1_ALIAS') to something more convienent.  
+----  Keep in mind, for every option list able that is added, you will have to have a unique alias.
+----  For every alias you assign here, you will have to reference that name in the column update section.
+----  Option List tables should be joined on the sync table by the column 'EN'
+-- 6. Repeat steps 5 and 6 for each additional Option List being used.  Lines 15 and 16 are in place to demonstrate using multiple option lists.
+----  Keep in mind, the join used should be a 'LEFT JOIN'.  This ensures all user records are updated even if the column for the option list is not
+----  If there is only 1 Option list being used, you will need to delete lines 15 and 16
+
+-- Updating Columns
+-- For lines 4 through 7, you will want to list all columns that can change given a specific record.
+-- Do not include the column Key you are matching on in the column updates.  
+-- Column updates should be written in the format of DESTINATION_COLUMN_NAME  = SOURCE_COLUMN_NAME
+-- Before the equals '=' sign:
+-- From the second column on, you will require a comma between column statements.  You can see this begining line 5.
+-- It is recommended that you retain the formating as above, beginning each line with a comma and continueing on to the next line after the column update statement
+-- 'DST.' should be placed in front of the column name for all columns in the target table - this will avoid potential conflicts if columns have similar names
+-- After the equals '=' sign:
+-- Columns that originate in the sync file should be proceeded by 'SYNC.'
+-- Columns that use an Option list should begin with the table alias you assigned in Instruction 5.  It should be in the form of 'OPTION_LIST_ALIAS.ID'
+
